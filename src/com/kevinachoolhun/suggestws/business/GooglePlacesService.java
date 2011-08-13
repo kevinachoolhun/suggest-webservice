@@ -2,20 +2,26 @@ package com.kevinachoolhun.suggestws.business;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
 import org.apache.http.util.ByteArrayBuffer;
 
-
 public class GooglePlacesService {
 	public static String CallGooglePlaces(double latitude, double longitude) {
 		String str = null;
 		try {
-			URL myURL = new URL(
+			URL url = new URL(
 					"https://maps.googleapis.com/maps/api/place/search/json?location="
-							+ latitude +","+ longitude /*"37.7781157,-122.42592285"*/
+							+ latitude
+							+ ","
+							+ longitude
 							+ "&radius=100000&types=restaurant|food|establishment&sensor=false&key=AIzaSyA6K2MKCrqnT0ImUCP4Pq3oWGb7Id7UuUA");
+			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(),
+					url.getQuery(), null);
+
+			URL myURL = uri.toURL();
 			URLConnection conn = myURL.openConnection();
 
 			InputStream streamFromWS = conn.getInputStream();
@@ -31,13 +37,12 @@ public class GooglePlacesService {
 
 			/* Convert the Bytes read to a String. */
 			str = new String(baf.toByteArray());
-		} 
-		catch (Exception ex) {
-			
+		} catch (Exception ex) {
+
 			ex.printStackTrace();
 			str = ex.getMessage();
 		}
-		
+
 		return str;
 	}
 }
