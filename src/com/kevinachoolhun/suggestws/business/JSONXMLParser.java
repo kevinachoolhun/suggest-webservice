@@ -1,6 +1,7 @@
 package com.kevinachoolhun.suggestws.business;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,8 +15,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.kevinachoolhun.suggestws.Model.*;
-import com.kevinachoolhun.suggestws.business.Utilities.*;
+import com.kevinachoolhun.suggestws.Model.Location;
+import com.kevinachoolhun.suggestws.Model.LocationResult;
+import com.kevinachoolhun.suggestws.Model.WeatherResult;
+import com.kevinachoolhun.suggestws.business.Utilities.Utilities;
 
 public class JSONXMLParser {
 
@@ -32,11 +35,18 @@ public class JSONXMLParser {
 				locResult.setStatus(Utilities
 						.GetPlacesStatusFromString(jsonObject
 								.getString("status")));
-				locResult.setHtml_attributions(jsonObject
-						.getString("html_attributions"));
 
-				JSONArray locationResults = new JSONArray(
-						jsonObject.getString("results"));
+				/*
+				 * JSONArray jsonArray =
+				 * (JSONArray)jsonObject.get("html_attributions"); String
+				 * attributions = ""; if (jsonArray != null) { for (int
+				 * i=0;i<jsonArray.length();i++){ attributions +=
+				 * jsonArray.get(i).toString(); } }
+				 */
+
+				// locResult.setHtml_attributions(jsonString);
+
+				JSONArray locationResults = jsonObject.getJSONArray("results");
 				int i;
 
 				ArrayList<Location> locationList = new ArrayList<Location>();
@@ -72,11 +82,12 @@ public class JSONXMLParser {
 
 	}
 
-	public static void ParseGoogleWeatherXML(String XML) {
+	public static WeatherResult ParseGoogleWeatherXML(InputStream XML) {
 
-		if (XML != null || XML != "") {
+		WeatherResult weatherResult = null;
 
-			try {
+		try {
+			if (XML != null) {
 				// get the factory
 				DocumentBuilderFactory dbf = DocumentBuilderFactory
 						.newInstance();
@@ -85,28 +96,68 @@ public class JSONXMLParser {
 				DocumentBuilder db = dbf.newDocumentBuilder();
 
 				// parse using builder to get DOM representation of the XML file
-				Document dom = db.parse("XML");
+				Document dom = db.parse(XML);
 
 				// get the root element
 				Element docEle = dom.getDocumentElement();
 
-				WeatherResult weather = new WeatherResult();
+				weatherResult = new WeatherResult();
 				// get a nodelist of elements
 
 				NodeList nl = docEle.getElementsByTagName("weather");
-				if (nl != null && nl.getLength() == 1) {
+				if (nl != null && nl.getLength() > 0) {
+
+					Element weather = (Element) nl.item(0);
+					NodeList forecastInfo = weather
+							.getElementsByTagName("forecast_information");
+
+					if (forecastInfo != null && forecastInfo.getLength() > 0) {
+						Element forecast = (Element) forecastInfo.item(0);
+						weatherResult.setCity(getData(forecast, "city"));
+						// weatherResult.setForecastDate((Date)
+						// getData(forecastInfo, "2011-07-25"));
+
+					}
+
+					NodeList currentCondition = weather
+							.getElementsByTagName("current_conditions");
+					if (currentCondition != null
+							&& currentCondition.getLength() > 0) {
+						Element currentCond = (Element) currentCondition
+								.item(0);
+						weatherResult.setCondition(getData(currentCond,
+								"condition"));
+						// weatherResult.setHumidity(getData(currentCond,
+						// "humidity"));
+						// weatherResult.setTemperatureInCelcius(temperatureInCelcius)
+
+					}
 
 				}
-
-			} catch (ParserConfigurationException pce) {
-				pce.printStackTrace();
-			} catch (SAXException se) {
-				se.printStackTrace();
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
 			}
 
+		} catch (ParserConfigurationException pce) {
+			pce.printStackTrace();
+		} catch (SAXException se) {
+			se.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
+
+		return weatherResult;
+	}
+
+	private static String getData(Element element, String nodeName) {
+
+		String data = null;
+		NodeList nl = element.getElementsByTagName(nodeName);
+		if (nl != null && nl.getLength() > 0) {
+			Element el = (Element) nl.item(0);
+			data = el.getAttribute("data");
+		}
+
+		return data;
+
 	}
 
 }

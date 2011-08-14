@@ -1,7 +1,6 @@
 package com.kevinachoolhun.suggestws.Model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

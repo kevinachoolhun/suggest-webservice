@@ -2,48 +2,52 @@ package com.kevinachoolhun.suggestws.business;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.ByteArrayBuffer;
 
+import com.kevinachoolhun.suggestws.business.Utilities.Utilities;
+
 public class GoogleWeatherService {
-	public static String CallGoogleWeather(String location)
-	{
+	
+	public static String CallGoogWeather(String location) {
+		return  Utilities.getStringResponse("http://www.google.com/ig/api?weather="+location);
+	}
+	
+	public static InputStream CallGoogleWeather(String location) {
 		String str;
-		
-		try
-		{
-		String webserviceUrl = "http://www.google.com/ig/api?weather=";
-		
-		String urlWithPostalCode = webserviceUrl.concat(location);
-		
-		URL myURL = new URL(urlWithPostalCode);
-		
-		URLConnection conn = myURL.openConnection();
+		InputStream streamFromWS = null;
+		try {
+			
+			String webserviceUrl = "http://www.google.com/ig/api?weather=";
 
-		InputStream streamFromWS = conn.getInputStream();
+			String urlWithPostalCode = webserviceUrl.concat(location);
+			
+			URL url = new URL(urlWithPostalCode);
+			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(),
+					url.getQuery(), null);
 
-		BufferedInputStream bufferStream = new BufferedInputStream(
-				streamFromWS);
+			URL myURL = uri.toURL();
+			URLConnection conn = myURL.openConnection();
 
-		ByteArrayBuffer baf = new ByteArrayBuffer(50);
-		int current = 0;
-		while ((current = bufferStream.read()) != -1) {
-			baf.append((byte) current);
-		}
+			streamFromWS = conn.getInputStream();
+		
 
-		/* Convert the Bytes read to a String. */
-		str = new String(baf.toByteArray());
-		} 
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			str = ex.getMessage();
-			
+
 		}
-		
-		return str;
-		
+
+		return streamFromWS;
+
 	}
 }

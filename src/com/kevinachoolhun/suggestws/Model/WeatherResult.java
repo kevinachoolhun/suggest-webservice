@@ -2,14 +2,17 @@ package com.kevinachoolhun.suggestws.Model;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class WeatherResult {
 
 	private String city;
-	public Date forecastDate;
-	public String condition;
-	public int temperatureInCelcius;
-	public int humidity;
-	public String windCondition;
+	private Date forecastDate;
+	private String condition;
+	private int temperatureInCelcius;
+	private int humidity;
+	private String windCondition;
 	
 	public void setCity(String city) {
 		this.city = city;

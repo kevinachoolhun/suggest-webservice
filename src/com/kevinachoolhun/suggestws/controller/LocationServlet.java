@@ -18,29 +18,34 @@ public class LocationServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 
-		resp.setContentType("text/plain");
+		// resp.setContentType("text/plain");
 
-		double la = Double.parseDouble(req.getParameter("la"));
-		double lo = Double.parseDouble(req.getParameter("lo"));
+		if (req.getParameter("lat") == null || req.getParameter("lng") == null) {
+			resp.getWriter().write("Specify lattitude(lat) and longitude (lng)");
 
-		LocationResult result = LocationPlacesFinder.GetPossibleLocations(la, lo);
+		} else {
+			double la = Double.parseDouble(req.getParameter("lat"));
+			double lo = Double.parseDouble(req.getParameter("lng"));
 
+			LocationResult result = LocationPlacesFinder.GetPossibleLocations(
+					la, lo);
 
-        StringWriter xml = new StringWriter();
-        
-        JAXBContext context;
-        try {
-            context = JAXBContext.newInstance(LocationResult.class);
-            Marshaller m = context.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			StringWriter xml = new StringWriter();
 
-            m.marshal(result, xml);
-        } catch (JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+			JAXBContext context;
+			try {
+				context = JAXBContext.newInstance(LocationResult.class);
+				Marshaller m = context.createMarshaller();
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        resp.getWriter().write(xml.toString());
+				m.marshal(result, xml);
+			} catch (JAXBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			resp.getWriter().write(xml.toString());
+		}
 
 	}
 
