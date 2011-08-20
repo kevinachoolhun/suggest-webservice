@@ -1,7 +1,6 @@
 package com.kevinachoolhun.suggestws.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 
 import javax.servlet.http.HttpServlet;
@@ -11,9 +10,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import com.kevinachoolhun.suggestws.Model.LocationResult;
 import com.kevinachoolhun.suggestws.Model.WeatherResult;
-import com.kevinachoolhun.suggestws.business.GoogleWeatherService;
 import com.kevinachoolhun.suggestws.business.WeatherForecastService;
 
 @SuppressWarnings("serial")
