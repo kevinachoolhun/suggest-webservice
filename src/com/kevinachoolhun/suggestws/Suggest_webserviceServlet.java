@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.kevinachoolhun.suggestws.business.GooglePlacesService;
+import com.kevinachoolhun.suggestws.businesslogic.GooglePlacesService;
 
 @SuppressWarnings("serial")
 public class Suggest_webserviceServlet extends HttpServlet {
