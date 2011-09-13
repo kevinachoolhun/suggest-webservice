@@ -1,5 +1,6 @@
 package com.kevinachoolhun.suggestws.businesslogic;
 
+import com.kevinachoolhun.suggestws.datalayer.GooglePlacesService;
 import com.kevinachoolhun.suggestws.entity.LocationResult;
 
 public class LocationPlacesFinder {

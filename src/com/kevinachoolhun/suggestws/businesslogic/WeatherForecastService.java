@@ -1,5 +1,6 @@
 package com.kevinachoolhun.suggestws.businesslogic;
 
+import com.kevinachoolhun.suggestws.datalayer.GoogleWeatherService;
 import com.kevinachoolhun.suggestws.entity.WeatherResult;
 
 import android.content.Context;
